@@ -3,23 +3,26 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:task_manager_app/services/snack_bar.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignUpScreen> createState() => _SignUpScreen();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreen extends State<SignUpScreen> {
   bool isHiddenPassword = true;
   TextEditingController emailTextInputController = TextEditingController();
   TextEditingController passwordTextInputController = TextEditingController();
+  TextEditingController passwordTextRepeatInputController =
+      TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
     emailTextInputController.dispose();
     passwordTextInputController.dispose();
+    passwordTextRepeatInputController.dispose();
 
     super.dispose();
   }
@@ -30,24 +33,34 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  Future<void> login() async {
+  Future<void> signUp() async {
     final navigator = Navigator.of(context);
 
     final isValid = formKey.currentState!.validate();
     if (!isValid) return;
 
+    if (passwordTextInputController.text !=
+        passwordTextRepeatInputController.text) {
+      SnackBarService.showSnackBar(
+        context,
+        'Пароли должны совпадать',
+        true,
+      );
+      return;
+    }
+
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailTextInputController.text.trim(),
         password: passwordTextInputController.text.trim(),
       );
     } on FirebaseAuthException catch (e) {
       print(e.code);
 
-      if (e.code == 'user-not-found' || e.code == 'wrong-password') {
+      if (e.code == 'email-already-in-use') {
         SnackBarService.showSnackBar(
           context,
-          'Неправильный email или пароль. Повторите попытку',
+          'Такой Email уже используется, повторите попытку с использованием другого Email',
           true,
         );
         return;
@@ -57,11 +70,10 @@ class _LoginScreenState extends State<LoginScreen> {
           'Неизвестная ошибка! Попробуйте еще раз или обратитесь в поддержку.',
           true,
         );
-        return;
       }
     }
 
-    navigator.pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
+    navigator.pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
   }
 
   @override
@@ -69,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('Войти'),
+        title: const Text('Зарегистрироваться'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(30.0),
@@ -95,10 +107,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 autocorrect: false,
                 controller: passwordTextInputController,
                 obscureText: isHiddenPassword,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: (value) => value != null && value.length < 6
                     ? 'Минимум 6 символов'
                     : null,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
                 decoration: InputDecoration(
                   border: const OutlineInputBorder(),
                   hintText: 'Введите пароль',
@@ -114,24 +126,42 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 30),
+              TextFormField(
+                autocorrect: false,
+                controller: passwordTextRepeatInputController,
+                obscureText: isHiddenPassword,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) => value != null && value.length < 6
+                    ? 'Минимум 6 символов'
+                    : null,
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  hintText: 'Введите пароль еще раз',
+                  suffix: InkWell(
+                    onTap: togglePasswordView,
+                    child: Icon(
+                      isHiddenPassword
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 30),
               ElevatedButton(
-                onPressed: login,
-                child: const Center(child: Text('Войти')),
+                onPressed: signUp,
+                child: const Center(child: Text('Регистрация')),
               ),
               const SizedBox(height: 30),
               TextButton(
-                onPressed: () => Navigator.of(context).pushNamed('/signup'),
+                onPressed: () => Navigator.of(context).pop(),
                 child: const Text(
-                  'Регистрация',
+                  'Войти',
                   style: TextStyle(
                     decoration: TextDecoration.underline,
                   ),
                 ),
-              ),
-              TextButton(
-                onPressed: () =>
-                    Navigator.of(context).pushNamed('/reset_password'),
-                child: const Text('Сбросить пароль'),
               ),
             ],
           ),
