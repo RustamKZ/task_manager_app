@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager_app/screens/RegisteredContentScreen.dart';
 import 'package:task_manager_app/screens/account_screen.dart';
 import 'package:task_manager_app/screens/login_screen.dart';
 
@@ -41,8 +42,17 @@ class HomeScreen extends StatelessWidget {
         child: Center(
           child: (user == null)
               ? const Text("Контент для НЕ зарегистрированных в системе")
-              : const Text('Контент для ЗАРЕГИСТРИРОВАННЫХ в системе'),
-          //child: Text('Контент для НЕ зарегистрированных в системе'),
+                : ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                          MaterialPageRoute(
+                           builder: (context) => const RegisteredContentScreen(),
+              ),
+            );
+          },
+          child: const Text('Начать работу!'),
+          ),
         ),
       ),
     );
