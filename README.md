@@ -1,16 +1,15 @@
-# task_manager_app
+# Управление проектами и задачами
+Предметная область: Проекты и сотрудники.
+Система должна решать следующие задачи:
+- хранить информацию о проектах и сотрудниках, вести учет записи сотрудников к проектам.
+- в удобном виде отображать информацию о проектах, сотрудниках, записях сотрудников к проектам.
+- предоставлять интерфейс для манипулирования записями в системе
+Сущности предметной области:
+- проект
+- сотрудник
+- событие
 
-A new Flutter project.
 
-## Getting Started
+## Скриншоты работы программы
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![Начальный экран](https://github.com/RustamKZ/task_manager_app/blob/master/Начальный%20экран.PNG)
