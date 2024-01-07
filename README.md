@@ -11,5 +11,8 @@
 
 
 ## Скриншоты работы программы
-
+Начальный экран.
 ![Начальный экран](https://github.com/RustamKZ/task_manager_app/blob/master/Начальный%20экран.PNG)
+
+Страница просмотра проектов.
+![Страница просмотра проектов](https://github.com/RustamKZ/task_manager_app/blob/master/Экран%20страницы%20с%20проектами.PNG)
